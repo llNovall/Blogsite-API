@@ -2,7 +2,7 @@
 
 namespace BlogsiteDomain.Repositories
 {
-    public interface ITagRepository : IRepository<BlogTag>
+    public interface IBlogTagRepository : IRepository<BlogTag>
     {
     }
 }
