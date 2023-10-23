@@ -121,6 +121,8 @@ var app = builder.Build();
 
 app.EnsureIdentityDbCreated();
 
+app.CreateAdminUser();
+
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
