@@ -124,6 +124,8 @@ builder.Services.AddTransient<IBlogTagRepository, BlogTagRepository>();
 builder.Services.AddTransient<IBlogRepository, BlogRespository>();
 builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
 
+builder.Services.AddAutoMapper(typeof(Program));
+
 var app = builder.Build();
 
 app.EnsureIdentityDbCreated();
