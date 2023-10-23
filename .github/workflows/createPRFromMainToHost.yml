@@ -3,7 +3,7 @@ name: Create PR
 on: 
   push:
     branches:
-      - main
+      - dev
 
 jobs:
   release:
@@ -15,5 +15,5 @@ jobs:
         uses: Poorva17/create-pr-action@v2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          HEAD_BRANCH: main
+          HEAD_BRANCH: dev
           BASE_BRANCH: host
