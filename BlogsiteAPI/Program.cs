@@ -74,6 +74,13 @@ builder.Services.Configure<MongoConnectionSetting>(options =>
     options.DatabaseName = mongoDatabaseName;
 });
 
+builder.Services.Configure<JwtSetting>(options =>
+{
+    options.Key = jwtKey;
+    options.Issuer = jwtIssuer;
+    options.Audience = jwtAudience;
+});
+
 builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AccountDbContext>();
 
 builder.Services.AddAuthorization(opt =>
