@@ -2,11 +2,15 @@ using BlogsiteAPI.Utils;
 using BlogsiteAppAccountAccess.Context;
 using BlogsiteDomain.Entities.Account;
 using BlogsiteMongoAccess;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.AzureAppServices;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
+using System.Security.Claims;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -41,6 +45,18 @@ string mongoDatabaseName = Environment.GetEnvironmentVariable("mongo_databaseNam
     ?? builder.Configuration["mongo:databaseName"]
     ?? throw new NullReferenceException(nameof(mongoDatabaseName));
 
+string jwtKey = Environment.GetEnvironmentVariable("jwt_key")
+    ?? builder.Configuration["jwt:jwt-key"]
+    ?? throw new NullReferenceException(nameof(jwtKey));
+
+string jwtIssuer = Environment.GetEnvironmentVariable("jwt_issuer")
+    ?? builder.Configuration["jwt:issuer"]
+    ?? throw new NullReferenceException(nameof(jwtIssuer));
+
+string jwtAudience = Environment.GetEnvironmentVariable("jwt_audience")
+    ?? builder.Configuration["jwt:audience"]
+    ?? throw new NullReferenceException(nameof(jwtAudience));
+
 builder.Services.AddDbContext<AccountDbContext>(
         options =>
         {
@@ -55,6 +71,29 @@ builder.Services.Configure<MongoConnectionSetting>(options =>
 });
 
 builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AccountDbContext>();
+
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("AdminOnly", policy => policy.RequireClaim(ClaimTypes.Role, "admin"));
+});
+
+builder.Services.AddAuthentication(opt =>
+{
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(opt =>
+{
+    opt.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = jwtIssuer,
+        ValidAudience = jwtAudience,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey))
+    };
+});
 
 builder.Services.AddControllers();
 
