@@ -1,3 +1,4 @@
+using BlogsiteAPI.Utils;
 using BlogsiteAppAccountAccess.Context;
 using BlogsiteDomain.Entities.Account;
 using Microsoft.AspNetCore.Identity;
@@ -54,6 +55,8 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+app.EnsureIdentityDbCreated();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
