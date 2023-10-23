@@ -1,6 +1,7 @@
 using BlogsiteAPI.Utils;
 using BlogsiteAppAccountAccess.Context;
 using BlogsiteDomain.Entities.Account;
+using BlogsiteMongoAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.AzureAppServices;
@@ -32,12 +33,26 @@ string appAccountConnectionString = Environment.GetEnvironmentVariable("app_acco
     ?? builder.Configuration["app-account:connectionString"]
     ?? throw new NullReferenceException(nameof(appAccountConnectionString));
 
+string mongoConnectionString = Environment.GetEnvironmentVariable("mongo_connectionString")
+    ?? builder.Configuration["mongo:connectionString"]
+    ?? throw new NullReferenceException(nameof(mongoConnectionString));
+
+string mongoDatabaseName = Environment.GetEnvironmentVariable("mongo_databaseName")
+    ?? builder.Configuration["mongo:databaseName"]
+    ?? throw new NullReferenceException(nameof(mongoDatabaseName));
+
 builder.Services.AddDbContext<AccountDbContext>(
         options =>
         {
             options.UseSqlServer(connectionString: appAccountConnectionString);
         }
     );
+
+builder.Services.Configure<MongoConnectionSetting>(options =>
+{
+    options.ConnectionString = mongoConnectionString;
+    options.DatabaseName = mongoDatabaseName;
+});
 
 builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AccountDbContext>();
 
