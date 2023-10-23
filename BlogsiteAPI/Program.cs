@@ -1,7 +1,11 @@
 using BlogsiteAPI.Utils;
 using BlogsiteAppAccountAccess.Context;
+using BlogsiteDomain.Context;
 using BlogsiteDomain.Entities.Account;
+using BlogsiteDomain.Repositories;
 using BlogsiteMongoAccess;
+using BlogsiteMongoAccess.Context;
+using BlogsiteMongoAccess.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -107,6 +111,11 @@ builder.Services.AddSwaggerGen(c =>
         Version = "v1"
     });
 });
+
+builder.Services.AddTransient<IMongoDbContext, MongoDbContext>();
+builder.Services.AddTransient<IBlogTagRepository, BlogTagRepository>();
+builder.Services.AddTransient<IBlogRepository, BlogRespository>();
+builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
 
 var app = builder.Build();
 
