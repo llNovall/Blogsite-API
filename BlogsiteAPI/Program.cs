@@ -1,4 +1,25 @@
+using Microsoft.Extensions.Logging.AzureAppServices;
+
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddLogging(c =>
+{
+    c.AddDebug();
+    c.AddConsole();
+    c.AddAzureWebAppDiagnostics();
+});
+
+builder.Services.Configure<AzureFileLoggerOptions>(options =>
+{
+    options.FileName = "azure-diagnostics-";
+    options.FileSizeLimit = 50 * 1024;
+    options.RetainedFileCountLimit = 5;
+});
+
+builder.Services.Configure<AzureBlobLoggerOptions>(options =>
+{
+    options.BlobName = "log.txt";
+});
 
 // Add services to the container.
 
