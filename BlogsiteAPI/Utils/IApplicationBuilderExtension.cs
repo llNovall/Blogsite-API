@@ -8,7 +8,7 @@ namespace BlogsiteAPI.Utils
 {
     public static class IApplicationBuilderExtension
     {
-        public static void CreateAdminUser(this IApplicationBuilder builder)
+        public static async Task CreateAdminUserAsync(this IApplicationBuilder builder)
         {
             IConfiguration? config = builder.ApplicationServices.GetService<IConfiguration>() ?? throw new NullReferenceException(nameof(IConfiguration));
 
@@ -43,32 +43,32 @@ namespace BlogsiteAPI.Utils
                 if (userManager == null)
                     throw new NullReferenceException(nameof(UserManager<AppUser>));
 
-                AppUser? admin = userManager.FindByNameAsync(adminUserName).GetAwaiter().GetResult();
+                AppUser? admin = await userManager.FindByNameAsync(adminUserName);
 
                 if (admin != null)
                     return;
 
                 admin = new AppUser(adminUserName);
-                userManager.SetEmailAsync(admin, adminEmail).GetAwaiter().GetResult();
-                var result = userManager.CreateAsync(admin, adminPassword).GetAwaiter().GetResult();
+                await userManager.SetEmailAsync(admin, adminEmail);
+                var result = await userManager.CreateAsync(admin, adminPassword);
 
                 if (result.Succeeded)
                 {
-                    userManager.AddClaimAsync(admin, new Claim(ClaimTypes.Role, adminRole)).GetAwaiter().GetResult();
+                    await userManager.AddClaimAsync(admin, new Claim(ClaimTypes.Role, adminRole));
                 }
             }
 
             return;
         }
 
-        public static void EnsureIdentityDbCreated(this IApplicationBuilder builder)
+        public static async Task EnsureIdentityDbCreatedAsync(this IApplicationBuilder builder)
         {
             using (var serviceScope = builder.ApplicationServices.GetRequiredService<IServiceScopeFactory>().CreateScope())
             {
                 AccountDbContext dbContext = serviceScope.ServiceProvider.GetRequiredService<AccountDbContext>();
 
-                if (dbContext.Database.EnsureCreated())
-                    dbContext.Database.Migrate();
+                if (await dbContext.Database.EnsureCreatedAsync())
+                    await dbContext.Database.MigrateAsync();
             }
         }
     }

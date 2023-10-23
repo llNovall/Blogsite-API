@@ -128,9 +128,9 @@ builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
-app.EnsureIdentityDbCreated();
+await app.EnsureIdentityDbCreatedAsync();
 
-app.CreateAdminUser();
+await app.CreateAdminUserAsync();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
