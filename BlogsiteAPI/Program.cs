@@ -1,3 +1,7 @@
+using BlogsiteAppAccountAccess.Context;
+using BlogsiteDomain.Entities.Account;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging.AzureAppServices;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
@@ -22,6 +26,19 @@ builder.Services.Configure<AzureBlobLoggerOptions>(options =>
 {
     options.BlobName = "log.txt";
 });
+
+string appAccountConnectionString = Environment.GetEnvironmentVariable("app_account_connectionString")
+    ?? builder.Configuration["app-account:connectionString"]
+    ?? throw new NullReferenceException(nameof(appAccountConnectionString));
+
+builder.Services.AddDbContext<AccountDbContext>(
+        options =>
+        {
+            options.UseSqlServer(connectionString: appAccountConnectionString);
+        }
+    );
+
+builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AccountDbContext>();
 
 builder.Services.AddControllers();
 
