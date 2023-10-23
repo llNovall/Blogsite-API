@@ -13,6 +13,9 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsiteDomain", "..\BlogsiteDomain\BlogsiteDomain.csproj", "{93F4E412-4A8B-4E0E-AB38-4A3C3126E035}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsiteMongoAccess", "..\BlogsiteMongoAccess\BlogsiteMongoAccess.csproj", "{63382C44-1C11-46CC-B2FE-41EC0ED45C3B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{93F4E412-4A8B-4E0E-AB38-4A3C3126E035} = {93F4E412-4A8B-4E0E-AB38-4A3C3126E035}
+	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlogsiteAppAccountAccess", "..\BlogsiteAppAccountAccess\BlogsiteAppAccountAccess.csproj", "{200DCB67-769D-403E-B9E1-F616C044A662}"
 EndProject
