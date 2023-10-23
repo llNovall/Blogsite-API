@@ -74,6 +74,13 @@ builder.Services.Configure<MongoConnectionSetting>(options =>
     options.DatabaseName = mongoDatabaseName;
 });
 
+builder.Services.Configure<JwtSetting>(options =>
+{
+    options.Key = jwtKey;
+    options.Issuer = jwtIssuer;
+    options.Audience = jwtAudience;
+});
+
 builder.Services.AddIdentity<AppUser, IdentityRole>().AddEntityFrameworkStores<AccountDbContext>();
 
 builder.Services.AddAuthorization(opt =>
@@ -116,6 +123,8 @@ builder.Services.AddTransient<IMongoDbContext, MongoDbContext>();
 builder.Services.AddTransient<IBlogTagRepository, BlogTagRepository>();
 builder.Services.AddTransient<IBlogRepository, BlogRespository>();
 builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
+
+builder.Services.AddAutoMapper(typeof(Program));
 
 var app = builder.Build();
 
