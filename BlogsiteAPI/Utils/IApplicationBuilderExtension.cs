@@ -11,7 +11,8 @@ namespace BlogsiteAPI.Utils
             {
                 AccountDbContext dbContext = serviceScope.ServiceProvider.GetRequiredService<AccountDbContext>();
 
-                dbContext.Database.Migrate();
+                if (dbContext.Database.EnsureCreated())
+                    dbContext.Database.Migrate();
             }
         }
     }
