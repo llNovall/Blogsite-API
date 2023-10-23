@@ -1,4 +1,6 @@
 using Microsoft.Extensions.Logging.AzureAppServices;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.SwaggerUI;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,24 +23,38 @@ builder.Services.Configure<AzureBlobLoggerOptions>(options =>
     options.BlobName = "log.txt";
 });
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("BlogAPIv1", new OpenApiInfo
+    {
+        Title = "BlogAPI",
+        Description = "A set of endpoints to be used for my blog site.",
+        Version = "v1"
+    });
+});
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    c.SwaggerEndpoint("/swagger/BlogAPIv1/swagger.json", "BlogsiteAPIv1");
+    c.DefaultModelRendering(ModelRendering.Example);
+    c.DisplayRequestDuration();
+    c.DocExpansion(DocExpansion.List);
+    c.EnableFilter();
+    c.EnableValidator();
+    c.ShowCommonExtensions();
+    c.ShowExtensions();
+});
 
 app.UseHttpsRedirection();
+app.UseHttpLogging();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
