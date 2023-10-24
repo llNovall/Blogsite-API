@@ -49,7 +49,8 @@ namespace BlogsiteAPI.Utils
                     return;
 
                 admin = new AppUser(adminUserName);
-                await userManager.SetEmailAsync(admin, adminEmail);
+                admin.Email = adminEmail;
+
                 var result = await userManager.CreateAsync(admin, adminPassword);
 
                 if (result.Succeeded)
