@@ -126,11 +126,22 @@ builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("EnableCORS", builder =>
+    {
+        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    }
+    );
+});
+
 var app = builder.Build();
 
 await app.EnsureIdentityDbCreatedAsync();
 
 await app.CreateAdminUserAsync();
+
+app.UseCors("EnableCORS");
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
