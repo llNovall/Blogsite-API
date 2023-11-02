@@ -123,6 +123,7 @@ builder.Services.AddTransient<IMongoDbContext, MongoDbContext>();
 builder.Services.AddTransient<IBlogTagRepository, BlogTagRepository>();
 builder.Services.AddTransient<IBlogRepository, BlogRespository>();
 builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
+builder.Services.AddTransient<IBlogCommentRepository, BlogCommentRepository>();
 
 builder.Services.AddAutoMapper(typeof(Program));
 
