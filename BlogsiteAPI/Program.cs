@@ -123,14 +123,26 @@ builder.Services.AddTransient<IMongoDbContext, MongoDbContext>();
 builder.Services.AddTransient<IBlogTagRepository, BlogTagRepository>();
 builder.Services.AddTransient<IBlogRepository, BlogRespository>();
 builder.Services.AddTransient<IProjectRepository, ProjectRepository>();
+builder.Services.AddTransient<IBlogCommentRepository, BlogCommentRepository>();
 
 builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("EnableCORS", builder =>
+    {
+        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    }
+    );
+});
 
 var app = builder.Build();
 
 await app.EnsureIdentityDbCreatedAsync();
 
 await app.CreateAdminUserAsync();
+
+app.UseCors("EnableCORS");
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -152,5 +164,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.Map("/", c => Task.Run(() => c.Response.Redirect("/swagger/index.html")));
 app.Run();

@@ -88,7 +88,7 @@ namespace BlogsiteAPI.Controllers.Account
                 issuer: _jwtKeySetting.Issuer,
                 audience: _jwtKeySetting.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(5),
+                expires: DateTime.Now.AddMinutes(30),
                 signingCredentials: signingCredentials
             );
 
