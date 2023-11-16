@@ -164,5 +164,5 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
+app.Map("/", c => Task.Run(() => c.Response.Redirect("/swagger/index.html")));
 app.Run();
